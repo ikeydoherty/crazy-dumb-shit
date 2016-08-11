@@ -133,7 +133,7 @@ static bool main_loop(void)
                                   SDL_WINDOWPOS_CENTERED,
                                   800,
                                   600,
-                                  SDL_WINDOW_SHOWN);
+                                  SDL_WINDOW_HIDDEN);
 
         if (!window) {
                 fprintf(stderr, "Failed to create SDL Window: %s\n", SDL_GetError());
@@ -141,7 +141,7 @@ static bool main_loop(void)
         }
 
         /* Set up the renderer + vsync */
-        ren = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        ren = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
         if (!ren) {
                 fprintf(stderr, "Failed to create SDL Renderer: %s\n", SDL_GetError());
                 return false;
@@ -153,7 +153,7 @@ static bool main_loop(void)
 
         /* Main render loop */
         running = true;
-        // SDL_ShowWindow(window);
+        SDL_ShowWindow(window);
 
         /* Dummy image stuff */
         tilesheet = load_image(ren, window, "assets/tilesheet.png");

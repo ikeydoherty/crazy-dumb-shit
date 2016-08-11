@@ -164,6 +164,7 @@ static bool main_loop(void)
                 render_rect.y = 10;
 
                 /* Clear the renderer, and now copy the FPS out */
+                SDL_SetRenderDrawColor(ren, 125, 125, 255, 255);
                 SDL_RenderClear(ren);
                 SDL_RenderCopy(ren, fps_counter, &source_rect, &render_rect);
                 SDL_RenderPresent(ren);

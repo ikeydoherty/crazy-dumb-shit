@@ -198,7 +198,7 @@ static bool main_loop(void)
                 SDL_SetRenderDrawColor(ren, 125, 125, 255, 255);
                 SDL_RenderClear(ren);
 
-                /* This is just hax to draw the first grass tile  */
+                /* Draw a 16x16(x32px) grid from the 2 32x32 in the tilesheet texture */
                 {
                         SDL_Rect grass_rect = {.x = 0, .y = 0, .h = 32, .w = 32 };
                         SDL_Rect weed_rect = {.x = 32, .y = 0, .h = 32, .w = 32 };

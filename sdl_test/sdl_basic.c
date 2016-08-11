@@ -74,7 +74,6 @@ static bool main_loop(void)
         autofree(TTF_Font) *font = NULL;
         /* Game loop. */
         bool running = false;
-        uint32_t start_time;
         SDL_Color fg_color = {.r = 255, .g = 255, .b = 255, .a = 255 };
         int rfhz;
 
@@ -114,10 +113,9 @@ static bool main_loop(void)
         SDL_ShowWindow(window);
 
         /* FPS Tracking (primitive + no averaging) */
-        start_time = SDL_GetTicks();
         uint32_t frames = 0;
-        uint32_t fps_track = 0;
-        uint32_t last_time = start_time;
+        uint32_t start_time = SDL_GetTicks();
+        float fps_track = 0.0f;
 
         uint frame_ticks = (uint)(1000 / rfhz);
 
@@ -140,7 +138,7 @@ static bool main_loop(void)
                 }
                 /* Get fps label */
                 autofree(char) *fps_label = NULL;
-                if (!asprintf(&fps_label, "%u fps", fps_track)) {
+                if (!asprintf(&fps_label, "%.2f fps", fps_track)) {
                         abort();
                 }
                 SDL_Rect render_rect;
@@ -160,13 +158,7 @@ static bool main_loop(void)
                         SDL_Delay(frame_ticks - (SDL_GetTicks() - render_start));
                 }
 
-                /* Update FPS value */
-                uint32_t cur_time = SDL_GetTicks();
-                if (cur_time > last_time + 1000) {
-                        last_time = cur_time;
-                        fps_track = frames;
-                        frames = 0;
-                }
+                fps_track = (float)frames / ((float)(SDL_GetTicks() - start_time) / 1000.0f);
         }
         return true;
 }

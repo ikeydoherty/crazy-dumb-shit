@@ -51,6 +51,21 @@ static inline SDL_Texture *render_text(SDL_Renderer *ren, TTF_Font *font, SDL_Co
 }
 
 /**
+ * Limiter to common hz
+ */
+static inline int pref_hz(int in)
+{
+        if (in <= 30) {
+                return 30;
+        } else if (in <= 55) {
+                return 50;
+        } else if (in < 100) {
+                return 60;
+        }
+        return in;
+}
+
+/**
  * Quickly get the actual refresh rate for the given window
  */
 static inline int get_refresh_rate(SDL_Window *window)
@@ -61,7 +76,7 @@ static inline int get_refresh_rate(SDL_Window *window)
                 fprintf(stderr, "Falling back to default %udHz\n", DEFAULT_REFRESH_RATE);
                 return DEFAULT_REFRESH_RATE;
         }
-        return mode.refresh_rate;
+        return pref_hz(mode.refresh_rate);
 }
 
 /**

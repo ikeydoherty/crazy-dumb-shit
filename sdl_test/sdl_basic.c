@@ -52,6 +52,32 @@ static inline SDL_Texture *render_text(SDL_Renderer *ren, TTF_Font *font, SDL_Co
 }
 
 /**
+ * Load the image into a surface, convert to an optimized surface, return a hardware texture
+ */
+static inline SDL_Texture *load_image(SDL_Renderer *ren, SDL_Window *window, const char *path)
+{
+        autofree(SDL_Surface) *img_surface = NULL;
+        autofree(SDL_Surface) *opt_surface = NULL;
+        SDL_Surface *win_surface = NULL;
+
+        img_surface = IMG_Load(path);
+        if (!img_surface) {
+                fprintf(stderr, "Failed to load %s: %s\n", path, IMG_GetError());
+                return NULL;
+        }
+
+        /* Optimized surface */
+        win_surface = SDL_GetWindowSurface(window);
+        opt_surface = SDL_ConvertSurface(img_surface, win_surface->format, 0);
+        if (!opt_surface) {
+                /* Just get h/w texture for unoptimized form then */
+                fprintf(stderr, "Cannot optimize %s: %s\n", path, SDL_GetError());
+                return SDL_CreateTextureFromSurface(ren, img_surface);
+        }
+        return SDL_CreateTextureFromSurface(ren, opt_surface);
+}
+
+/**
  * Limiter to common hz
  */
 static inline int pref_hz(int in)
@@ -88,6 +114,7 @@ static bool main_loop(void)
         autofree(SDL_Window) *window = NULL;
         autofree(SDL_Renderer) *ren = NULL;
         autofree(TTF_Font) *font = NULL;
+        autofree(SDL_Texture) *tilesheet = NULL;
         /* Game loop. */
         bool running = false;
         SDL_Color fg_color = {.r = 255, .g = 255, .b = 255, .a = 255 };
@@ -106,7 +133,7 @@ static bool main_loop(void)
                                   SDL_WINDOWPOS_CENTERED,
                                   800,
                                   600,
-                                  SDL_WINDOW_HIDDEN);
+                                  SDL_WINDOW_SHOWN);
 
         if (!window) {
                 fprintf(stderr, "Failed to create SDL Window: %s\n", SDL_GetError());
@@ -114,7 +141,7 @@ static bool main_loop(void)
         }
 
         /* Set up the renderer + vsync */
-        ren = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        ren = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         if (!ren) {
                 fprintf(stderr, "Failed to create SDL Renderer: %s\n", SDL_GetError());
                 return false;
@@ -126,7 +153,10 @@ static bool main_loop(void)
 
         /* Main render loop */
         running = true;
-        SDL_ShowWindow(window);
+        // SDL_ShowWindow(window);
+
+        /* Dummy image stuff */
+        tilesheet = load_image(ren, window, "assets/tilesheet.png");
 
         /* FPS Tracking (primitive + no averaging) */
         uint32_t frames = 0;
@@ -167,10 +197,34 @@ static bool main_loop(void)
                 /* Clear the renderer, and now copy the FPS out */
                 SDL_SetRenderDrawColor(ren, 125, 125, 255, 255);
                 SDL_RenderClear(ren);
+
+                /* This is just hax to draw the first grass tile  */
+                {
+                        SDL_Rect grass_rect = {.x = 0, .y = 0, .h = 32, .w = 32 };
+                        SDL_Rect weed_rect = {.x = 32, .y = 0, .h = 32, .w = 32 };
+
+                        int w_count = 0;
+
+                        for (int i = 0; i < 16; i++) {
+                                for (int j = 0; j < 16; j++) {
+                                        SDL_Rect tgt_rect = {.x = j * 32,
+                                                             .y = i * 32,
+                                                             .h = 32,
+                                                             .w = 32 };
+                                        SDL_RenderCopy(ren,
+                                                       tilesheet,
+                                                       w_count % 3 == 0 ? &weed_rect : &grass_rect,
+                                                       &tgt_rect);
+                                        ++w_count;
+                                }
+                        }
+                }
+
                 SDL_RenderCopy(ren, fps_counter, &source_rect, &render_rect);
+                /* Finished, present it */
                 SDL_RenderPresent(ren);
 
-                /* Frame limit */
+                /* Frame limit  */
                 if ((SDL_GetTicks() - render_start) < frame_ticks) {
                         SDL_Delay(frame_ticks - (SDL_GetTicks() - render_start));
                 }

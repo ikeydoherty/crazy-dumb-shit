@@ -13,6 +13,7 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <SDL_image.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -194,9 +195,14 @@ int main(void)
                 fprintf(stderr, "Failed to initialise font system: %s\n", TTF_GetError());
                 return EXIT_FAILURE;
         }
-
+        /* Initialise PNG */
+        if (IMG_Init(0 & IMG_INIT_PNG) != 0) {
+                fprintf(stderr, "Failed to initialise image system: %s\n", IMG_GetError());
+                return EXIT_FAILURE;
+        }
         bool success = main_loop();
         SDL_Quit();
         TTF_Quit();
+        IMG_Quit();
         return success ? EXIT_SUCCESS : EXIT_FAILURE;
 }

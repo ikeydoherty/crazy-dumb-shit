@@ -11,7 +11,7 @@ CFLAGS="$CFLAGS -fstack-protector -Wall -pedantic \
 -Wall -W -D_FORTIFY_SOURCE=2 -std=c11"
 
 # PKG_CHECK_MODULES
-PKG_FLAGS="`pkg-config --cflags --libs sdl2` `pkg-config --cflags --libs SDL2_ttf`"
+PKG_FLAGS="`pkg-config --cflags --libs sdl2 SDL2_ttf SDL2_image`"
 
 # Avoid unnecessary linkage, leverage the Solus toolchain
 export LD_AS_NEEDED=1

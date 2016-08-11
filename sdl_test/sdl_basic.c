@@ -93,7 +93,7 @@ static bool main_loop(void)
         int rfhz;
 
         /* Create our font first */
-        font = TTF_OpenFont("fonts/Hack-Regular.ttf", 16);
+        font = TTF_OpenFont("assets/fonts/Hack-Regular.ttf", 16);
         if (!font) {
                 fprintf(stderr, "Failed to load font: %s\n", TTF_GetError());
                 return false;

@@ -199,24 +199,19 @@ static bool main_loop(void)
                 SDL_RenderClear(ren);
 
                 /* Draw a 64x64(x32px) grid from the 2 32x32 in the tilesheet texture */
-                {
-                        SDL_Rect grass_rect = {.x = 0, .y = 0, .h = 32, .w = 32 };
-                        SDL_Rect weed_rect = {.x = 32, .y = 0, .h = 32, .w = 32 };
+                SDL_Rect grass_rect = {.x = 0, .y = 0, .h = 32, .w = 32 };
+                SDL_Rect weed_rect = {.x = 32, .y = 0, .h = 32, .w = 32 };
 
-                        int w_count = 0;
+                int w_count = 0;
 
-                        for (int i = 0; i < 64; i++) {
-                                for (int j = 0; j < 64; j++) {
-                                        SDL_Rect tgt_rect = {.x = j * 32,
-                                                             .y = i * 32,
-                                                             .h = 32,
-                                                             .w = 32 };
-                                        SDL_RenderCopy(ren,
-                                                       tilesheet,
-                                                       w_count % 3 == 0 ? &weed_rect : &grass_rect,
-                                                       &tgt_rect);
-                                        ++w_count;
-                                }
+                for (int i = 0; i < 64; i++) {
+                        for (int j = 0; j < 64; j++) {
+                                SDL_Rect tgt_rect = {.x = j * 32, .y = i * 32, .h = 32, .w = 32 };
+                                SDL_RenderCopy(ren,
+                                               tilesheet,
+                                               w_count % 3 == 0 ? &weed_rect : &grass_rect,
+                                               &tgt_rect);
+                                ++w_count;
                         }
                 }
 

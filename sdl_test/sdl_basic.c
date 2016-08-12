@@ -195,7 +195,7 @@ static bool main_loop(void)
                 render_rect.y = 10;
 
                 /* Clear the renderer, and now copy the FPS out */
-                SDL_SetRenderDrawColor(ren, 125, 125, 255, 255);
+                SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
                 SDL_RenderClear(ren);
 
                 /* Draw a 64x64(x32px) grid from the 2 32x32 in the tilesheet texture */

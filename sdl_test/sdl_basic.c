@@ -121,7 +121,7 @@ static bool main_loop(void)
         int rfhz;
 
         /* Create our font first */
-        font = TTF_OpenFont("assets/fonts/Hack-Regular.ttf", 16);
+        font = TTF_OpenFont("../assets/fonts/Hack-Regular.ttf", 16);
         if (!font) {
                 fprintf(stderr, "Failed to load font: %s\n", TTF_GetError());
                 return false;
@@ -156,7 +156,7 @@ static bool main_loop(void)
         SDL_ShowWindow(window);
 
         /* Dummy image stuff */
-        tilesheet = load_image(ren, window, "assets/tilesheet.png");
+        tilesheet = load_image(ren, window, "../assets/tilesheet.png");
 
         /* FPS Tracking (primitive + no averaging) */
         uint32_t frames = 0;

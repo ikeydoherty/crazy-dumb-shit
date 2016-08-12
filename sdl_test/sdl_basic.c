@@ -117,7 +117,8 @@ static bool main_loop(void)
         autofree(SDL_Texture) *tilesheet = NULL;
         /* Game loop. */
         bool running = false;
-        SDL_Color fg_color = {.r = 255, .g = 255, .b = 255, .a = 255 };
+        SDL_Color fg_color = {.r = 241, .g = 231, .b = 255, .a = 255 };
+        SDL_Color shadow_color = {.r = 0, .g = 0, .b = 0, .a = 2 };
         int rfhz;
 
         /* Create our font first */
@@ -168,6 +169,7 @@ static bool main_loop(void)
         while (running) {
                 SDL_Event event = { 0 };
                 autofree(SDL_Texture) *fps_counter = NULL;
+                autofree(SDL_Texture) *fps_counter_shadow = NULL;
                 ++frames;
                 uint32_t render_start = SDL_GetTicks();
 
@@ -189,10 +191,11 @@ static bool main_loop(void)
                 }
                 SDL_Rect render_rect;
                 fps_counter = render_text(ren, font, fg_color, fps_label, &render_rect);
+                fps_counter_shadow = render_text(ren, font, shadow_color, fps_label, NULL);
                 SDL_Rect source_rect = render_rect;
                 /* Only modify x/y on the render, don't spazz the source, it warps */
-                render_rect.x = 10;
-                render_rect.y = 10;
+                render_rect.x = (800 - render_rect.w) - 10;
+                render_rect.y = 18;
 
                 /* Clear the renderer, and now copy the FPS out */
                 SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
@@ -215,6 +218,9 @@ static bool main_loop(void)
                         }
                 }
 
+                SDL_RenderCopy(ren, fps_counter_shadow, &source_rect, &render_rect);
+                render_rect.x -= 1;
+                render_rect.y -= 1;
                 SDL_RenderCopy(ren, fps_counter, &source_rect, &render_rect);
                 /* Finished, present it */
                 SDL_RenderPresent(ren);

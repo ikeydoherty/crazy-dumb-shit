@@ -68,6 +68,9 @@ static inline SDL_Texture *load_image(SDL_Renderer *ren, SDL_Window *window, con
 
         /* Optimized surface */
         win_surface = SDL_GetWindowSurface(window);
+        if (!win_surface) {
+                return SDL_CreateTextureFromSurface(ren, img_surface);
+        }
         opt_surface = SDL_ConvertSurface(img_surface, win_surface->format, 0);
         if (!opt_surface) {
                 /* Just get h/w texture for unoptimized form then */
@@ -82,6 +85,9 @@ static inline SDL_Texture *load_image(SDL_Renderer *ren, SDL_Window *window, con
  */
 static inline int pref_hz(int in)
 {
+        if (in <= 0) {
+                return DEFAULT_REFRESH_RATE;
+        }
         if (in <= 30) {
                 return 30;
         } else if (in <= 55) {

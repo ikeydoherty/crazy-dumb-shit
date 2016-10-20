@@ -106,9 +106,10 @@ static inline int get_refresh_rate(SDL_Window *window)
         SDL_DisplayMode mode = { 0 };
         if (SDL_GetWindowDisplayMode(window, &mode) != 0) {
                 fprintf(stderr, "get_refresh_rate(): %s\n", SDL_GetError());
-                fprintf(stderr, "Falling back to default %udHz\n", DEFAULT_REFRESH_RATE);
+                fprintf(stderr, "Falling back to default %uHz\n", DEFAULT_REFRESH_RATE);
                 return DEFAULT_REFRESH_RATE;
         }
+        fprintf(stderr, "SDL2 actually reports %uHz\n", mode.refresh_rate);
         return pref_hz(mode.refresh_rate);
 }
 

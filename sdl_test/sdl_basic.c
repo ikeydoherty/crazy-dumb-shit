@@ -26,6 +26,8 @@ DEF_AUTOFREE(SDL_Texture, SDL_DestroyTexture)
 DEF_AUTOFREE(SDL_Renderer, SDL_DestroyRenderer)
 DEF_AUTOFREE(char, free)
 
+static bool use_fullscreen = false;
+
 /**
  * Just in case we fail to find it.
  */
@@ -162,6 +164,9 @@ static bool main_loop(void)
         /* Main render loop */
         running = true;
         SDL_ShowWindow(window);
+        if (use_fullscreen) {
+                SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        }
 
         /* Dummy image stuff */
         tilesheet = load_image(ren, window, "../assets/tilesheet.png");
@@ -184,6 +189,7 @@ static bool main_loop(void)
                 while (SDL_PollEvent(&event)) {
                         switch (event.type) {
                         case SDL_QUIT:
+                        case SDL_MOUSEBUTTONDOWN:
                                 running = false;
                                 break;
                         default:
@@ -245,7 +251,7 @@ static bool main_loop(void)
 /**
  * Main entry, ensuring cleanups take place
  */
-int main(void)
+int main(int argc, char **argv)
 {
         /* Try to init SDL */
         if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -261,6 +267,9 @@ int main(void)
         if (IMG_Init(0 & IMG_INIT_PNG) != 0) {
                 fprintf(stderr, "Failed to initialise image system: %s\n", IMG_GetError());
                 return EXIT_FAILURE;
+        }
+        if (argc == 2 && strcmp(argv[1], "--fullscreen") == 0) {
+                use_fullscreen = true;
         }
         bool success = main_loop();
         SDL_Quit();

@@ -17,4 +17,4 @@ PKG_FLAGS="`pkg-config --cflags --libs sdl2 SDL2_ttf SDL2_image`"
 export LD_AS_NEEDED=1
 
 # Go build it.
-gcc $CFLAGS $LDFLAGS sdl_basic.c $PKG_FLAGS-o sdl_basic
+gcc $CFLAGS $LDFLAGS sdl_basic.c $PKG_FLAGS -o sdl_basic

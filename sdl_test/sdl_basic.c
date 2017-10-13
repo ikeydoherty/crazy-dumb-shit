@@ -47,7 +47,7 @@ static inline SDL_Texture *render_text(SDL_Renderer *ren, TTF_Font *font, SDL_Co
         }
         /* Store the size here for SDL_RenderCopy */
         if (optimal_size) {
-                SDL_Rect opt = {.x = 0, .y = 0, .w = surface->w, .h = surface->h };
+                SDL_Rect opt = { .x = 0, .y = 0, .w = surface->w, .h = surface->h };
                 *optimal_size = opt;
         }
         return SDL_CreateTextureFromSurface(ren, surface);
@@ -126,8 +126,8 @@ static bool main_loop(void)
         autofree(SDL_Texture) *tilesheet = NULL;
         /* Game loop. */
         bool running = false;
-        SDL_Color fg_color = {.r = 241, .g = 231, .b = 255, .a = 255 };
-        SDL_Color shadow_color = {.r = 0, .g = 0, .b = 0, .a = 2 };
+        SDL_Color fg_color = { .r = 241, .g = 231, .b = 255, .a = 255 };
+        SDL_Color shadow_color = { .r = 0, .g = 0, .b = 0, .a = 2 };
         int rfhz;
 
         /* Create our font first */
@@ -215,14 +215,14 @@ static bool main_loop(void)
                 SDL_RenderClear(ren);
 
                 /* Draw a 64x64(x32px) grid from the 2 32x32 in the tilesheet texture */
-                SDL_Rect grass_rect = {.x = 0, .y = 0, .h = 32, .w = 32 };
-                SDL_Rect weed_rect = {.x = 32, .y = 0, .h = 32, .w = 32 };
+                SDL_Rect grass_rect = { .x = 0, .y = 0, .h = 32, .w = 32 };
+                SDL_Rect weed_rect = { .x = 32, .y = 0, .h = 32, .w = 32 };
 
                 int w_count = 0;
 
                 for (int i = 0; i < 64; i++) {
                         for (int j = 0; j < 64; j++) {
-                                SDL_Rect tgt_rect = {.x = j * 32, .y = i * 32, .h = 32, .w = 32 };
+                                SDL_Rect tgt_rect = { .x = j * 32, .y = i * 32, .h = 32, .w = 32 };
                                 SDL_RenderCopy(ren,
                                                tilesheet,
                                                w_count % 3 == 0 ? &weed_rect : &grass_rect,
